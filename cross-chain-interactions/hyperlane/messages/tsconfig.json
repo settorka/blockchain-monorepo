@@ -1,38 +1,19 @@
 {
-  // Visit https://aka.ms/tsconfig for more info
   "compilerOptions": {
-    // File layout
+    "target": "ES2022",
+    "module": "Node16", 
+    "moduleResolution": "Node16", 
     "outDir": "./dist",
-    // Environment
-    "target": "ES2022", // modern features, Node 20+ safe
-    "module": "CommonJS", // backend default
-    "moduleResolution": "node16", // modern Node resolution
+    "rootDir": ".",
     "lib": [
       "ES2022"
     ],
     "types": [
       "node"
     ],
-    // Outputs
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-    // Strictness
     "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    // Module / import style
     "esModuleInterop": true,
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    // Performance & consistency
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    // Deprecation handling
     "ignoreDeprecations": "6.0"
-  },
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  }
 }
