@@ -16,7 +16,7 @@ app.use("/messages", messagesRouter);
 
 
 app.get("/", (_: Request, res: Response) => {
-    res.send("Cross-chain API up and running 🚀");
+    res.send("Cross-chain API up and running!");
 });
 
 

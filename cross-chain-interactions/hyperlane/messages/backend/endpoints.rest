@@ -1,0 +1,9 @@
+### Root health check
+GET http://localhost:3000/
+Accept: application/json
+
+###
+
+### Fetch all chains
+GET http://localhost:3000/chains
+Accept: application/json
