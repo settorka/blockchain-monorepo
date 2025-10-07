@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  db:
+    build: ./db
+    container_name: timescaledb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: crosschain
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  api:
+    build: ../api
+    container_name: crosschain-api
+    env_file: ../../.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - anvil-polygon
+      - anvil-arbitrum
+      - anvil-optimism
+      - anvil-sepolia
+
+  anvil-polygon:
+    build: ./anvil
+    container_name: anvil-polygon
+    environment:
+      CHAIN_NAME: polygon
+      CHAIN_ID: 137
+      PORT: 8545
+    ports:
+      - "8545:8545"
+
+  anvil-arbitrum:
+    build: ./anvil
+    container_name: anvil-arbitrum
+    environment:
+      CHAIN_NAME: arbitrum
+      CHAIN_ID: 42161
+      PORT: 8545
+    ports:
+      - "8546:8545"
+
+  anvil-optimism:
+    build: ./anvil
+    container_name: anvil-optimism
+    environment:
+      CHAIN_NAME: optimism
+      CHAIN_ID: 10
+      PORT: 8545
+    ports:
+      - "8547:8545"
+
+  anvil-sepolia:
+    build: ./anvil
+    container_name: anvil-sepolia
+    environment:
+      CHAIN_NAME: sepolia
+      CHAIN_ID: 11155111
+      PORT: 8545
+    ports:
+      - "8548:8545"
+
+volumes:
+  db_data:
