@@ -16,7 +16,7 @@ Accept: application/json
 
 {
   "fromChain": "Polygon",
-  "toChain": "Arbitrum",
+  "toChain": "Optimism",
   "payload": "Sample Message"
 }
 
