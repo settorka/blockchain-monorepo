@@ -1,7 +1,13 @@
 import { Router } from "express";
+import { pool } from "../db/index.js";
 import { sendMessage } from "../services/messages.service.js";
 
 const router = Router();
+
+router.get("/history", async (_, res) => {
+    const { rows } = await pool.query("SELECT * FROM messages ORDER BY timestamp DESC");
+    res.json(rows);
+});
 
 router.post("/", async (req, res) => {
     try {

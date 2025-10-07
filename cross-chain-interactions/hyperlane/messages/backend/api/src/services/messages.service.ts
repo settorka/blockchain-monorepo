@@ -1,5 +1,8 @@
+// backend/api/src/services/messages.service.ts
+import crypto from "crypto";
 import { loadChains } from "./chains.service.js";
 import { ethers } from "ethers";
+import { pool } from "../db/index.js";
 
 export const sendMessage = async (
     fromChain: string,
@@ -14,10 +17,25 @@ export const sendMessage = async (
 
     const provider = new ethers.JsonRpcProvider(source.rpcUrl);
 
-    // here we’ll call the Hyperlane Mailbox contract
-    // for now just simulate a tx hash
+    // simulate a tx hash for now
     console.log(`Sending message from ${source.name} → ${dest.name}: ${payload}`);
-
     const txHash = "0x" + crypto.randomUUID().replace(/-/g, "").slice(0, 64);
+
+    // check DB connectivity before trying to insert
+    try {
+        await pool.query("SELECT 1");
+    } catch (err) {
+        console.error("❌ Database not connected:", err);
+        throw new Error("Database not connected");
+    }
+
+    // insert into DB
+    await pool.query(
+        `INSERT INTO messages (from_chain, to_chain, payload, tx_hash)
+     VALUES ($1, $2, $3, $4)`,
+        [source.name, dest.name, payload, txHash]
+    );
+
+    console.log(`📨 message stored in DB with txHash: ${txHash}`);
     return { txHash, from: source.name, to: dest.name, payload };
 };
