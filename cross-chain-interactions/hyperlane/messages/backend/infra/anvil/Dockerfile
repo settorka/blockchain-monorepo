@@ -6,6 +6,6 @@ WORKDIR /app
 USER root
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
-USER foundry   # optional, to drop back down
+
 
 ENTRYPOINT ["/app/entrypoint.sh"]

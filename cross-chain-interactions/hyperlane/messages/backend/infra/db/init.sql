@@ -1,8 +1,3 @@
-
--- Create database and user for the API
-CREATE DATABASE crosschain;
-
-\connect crosschain;
-
-CREATE USER postgres WITH PASSWORD 'postgres';
-GRANT ALL PRIVILEGES ON DATABASE crosschain TO postgres;
+-- you can leave this empty, or just log something
+-- since the database and user are auto-created
+SELECT 'DB init done';
