@@ -1,9 +1,11 @@
-# backend/infra/anvil/Dockerfile
 FROM ghcr.io/foundry-rs/foundry:latest
 
 WORKDIR /app
 
+# temporarily elevate
+USER root
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
+USER foundry   # optional, to drop back down
 
 ENTRYPOINT ["/app/entrypoint.sh"]
