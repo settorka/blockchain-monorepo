@@ -1,0 +1,24 @@
+{
+    "name": "cross-chain-api",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "dist/index.js",
+    "scripts": {
+        "dev": "node --import ./register.mjs --watch src/index.ts",
+        "build": "tsc",
+        "start": "node dist/index.js"
+    },
+    "dependencies": {
+        "dotenv": "^16.6.1",
+        "ethers": "^6.15.0",
+        "express": "^4.21.2",
+        "pg": "^8.11.5"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.23",
+        "@types/node": "^20.19.19",
+        "@types/pg": "^8.15.5",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.9.3"
+    }
+}

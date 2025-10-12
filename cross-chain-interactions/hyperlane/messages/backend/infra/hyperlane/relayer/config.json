@@ -1,0 +1,36 @@
+{
+    "chains": {
+        "polygon": {
+            "rpcUrls": [
+                "http://anvil-polygon:8545"
+            ],
+            "domain": 137
+        },
+        "arbitrum": {
+            "rpcUrls": [
+                "http://anvil-arbitrum:8545"
+            ],
+            "domain": 42161
+        },
+        "optimism": {
+            "rpcUrls": [
+                "http://anvil-optimism:8545"
+            ],
+            "domain": 10
+        },
+        "sepolia": {
+            "rpcUrls": [
+                "http://anvil-sepolia:8545"
+            ],
+            "domain": 11155111
+        }
+    },
+    "relayer": {
+        "address": "0x0000000000000000000000000000000000000002",
+        "privateKey": "0xYOUR_PRIVATE_KEY"
+    },
+    "defaultGasPaymentEnforcement": {
+        "type": "none"
+    },
+    "interval": 5
+}
