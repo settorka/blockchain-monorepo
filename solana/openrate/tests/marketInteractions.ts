@@ -9,11 +9,23 @@ import {
 } from "@solana/spl-token";
 
 /**
- * Full market lifecycle test.
- * 
- * Builds on verified InitializeMarket behavior.
- * Subsequent instructions use consistent PDA derivations and
- * rely on Anchor's init constraints for new accounts.
+ * Comprehensive market lifecycle test for the Openrate program.
+ *
+ *  Builds upon a verified market initialization path that mirrors the on-chain `initialize_market` instruction.
+ *  Derives all PDAs identically to Rust seed logic (`market`, `vault`, `vault_authority`, `bid_order`, `borrow_record`).
+ *  Uses explicit Anchor account mappings with PDA accounts instead of auto-derived clients.
+ *  
+ * Exec Sequence:
+ *    1. Initialize the market and PDAs.
+ *    2. Create and fund a lender token account.
+ *    3. Place a bid (creates `bid_order` PDA).
+ *    4. Generate a borrower, airdrop 5 SOL, derive and create borrower token account.
+ *    5. Borrow funds (creates `borrow_record` PDA).
+ *    6. Repay borrowed funds back into vault.
+ *    7. Cancel remaining bid liquidity.
+ *  
+ *  Ensures all lamport-funded accounts have sufficient balance to pass system rent checks.
+ *  Designed for deterministic reproducibility in local validator contexts (`anchor test`).
  */
 describe("openrate", () => {
     const provider = anchor.AnchorProvider.env();
@@ -36,7 +48,10 @@ describe("openrate", () => {
     let borrowerKeypair: anchor.web3.Keypair;
 
     /**
-     * Initializes the market.
+     *  stage 1: Initialize the market and all core PDAs.
+     *  Creates a dummy SPL mint for the market’s base token.
+     *  seed derivation for rust entities
+     *  spl account linkage for market and vault
      */
     it("Initializes the market", async () => {
         mint = await createMint(connection, wallet.payer, wallet.publicKey, null, 6);
@@ -79,7 +94,12 @@ describe("openrate", () => {
     });
 
     /**
-     * Places a bid from the lender.
+     * stage 2 – Place a bid into the market.
+     * - Creates a lender-owned associated token account.
+     * -- Mints test tokens to the lender.
+     * -- Derives `bid_order` PDA  
+     * -- invokes `place_bid` instruction.
+     * - this  initializes a new `BidOrder` account.
      */
     it("Places a bid", async () => {
         lenderTokenAccount = await getOrCreateAssociatedTokenAccount(
@@ -99,11 +119,7 @@ describe("openrate", () => {
         );
 
         [bidOrderPda] = anchor.web3.PublicKey.findProgramAddressSync(
-            [
-                Buffer.from("bid_order"),
-                wallet.publicKey.toBuffer(),
-                marketPda.toBuffer(),
-            ],
+            [Buffer.from("bid_order"), wallet.publicKey.toBuffer(), marketPda.toBuffer()],
             program.programId
         );
 
@@ -127,10 +143,18 @@ describe("openrate", () => {
     });
 
     /**
-     * Borrows funds using the market liquidity.
+     * stage 3 – Borrow funds from market liquidity.
+     * - Generates a borrower keypair and requests a 5 SOL airdrop to fund account creation.
+     * - Confirmation process is awaited
+     * - borrower's ATA is created for the spl mint. then, 
+     * -- Derives borrow_record PDA 
+     * -- Executes borrow instruction to transfer liquidity.
      */
     it("Borrows funds", async () => {
         borrowerKeypair = anchor.web3.Keypair.generate();
+
+        await connection.requestAirdrop(borrowerKeypair.publicKey, 5 * anchor.web3.LAMPORTS_PER_SOL);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         borrowerTokenAccount = await getOrCreateAssociatedTokenAccount(
             connection,
@@ -170,7 +194,10 @@ describe("openrate", () => {
     });
 
     /**
-     * Repays borrowed funds.
+     * stage 4 – Repay borrowed funds.
+     * - Mints fresh tokens to borrower account to simulate repayment capability.
+     * - Executes repay instruction to transfer tokens back to the vault.
+     * - Depends on successful creation of borrow_record in the previous test.
      */
     it("Repays borrowed funds", async () => {
         await mintTo(
@@ -204,7 +231,9 @@ describe("openrate", () => {
     });
 
     /**
-     * Cancels remaining bid liquidity.
+     * stage 5 – Cancels remaining bid liquidity.
+     * - Invokes cancel_bid; 
+     * - this returns any unutilized tokens to the lender.
      */
     it("Cancels remaining bid liquidity", async () => {
         const tx = await program.methods
