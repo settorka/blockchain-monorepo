@@ -10,7 +10,7 @@ describe("openrate", () => {
 
   it("Is initialized!", async () => {
     // Add your test here.
-    const tx = await program.methods.initialize().rpc();
+    const tx = await program.methods.initializeMarket().rpc();
     console.log("Your transaction signature", tx);
   });
 });
