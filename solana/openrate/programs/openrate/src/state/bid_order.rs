@@ -20,17 +20,17 @@ pub struct BidOrder {
 
 /// BidOrder implementation
 ///
-/// The `LEN` constant ensures deterministic account sizing for Solana's
+/// The LEN constant ensures deterministic account sizing for Solana's
 /// rent-exemption calculation.  
-/// - `8` bytes → Anchor discriminator identifying account type  
-/// - `32 + 32` → lender and market public keys  
-/// - `8` → u64 token amount  
-/// - `2` → u16 interest rate in basis points  
-/// - `8` → u64 filled amount  
-/// - `1` → bump seed for PDA derivation  
-/// - `1` → boolean `is_active` flag  
-/// - `8` → i64 Unix timestamp of creation  
-/// - `6` → padding for alignment and forward compatibility
+/// - 8 bytes → Anchor discriminator identifying account type  
+/// - 32 + 32 → lender and market public keys  
+/// - 8 → u64 token amount  
+/// - 2 → u16 interest rate in basis points  
+/// - 8 → u64 filled amount  
+/// - 1 → bump seed for PDA derivation  
+/// - 1 → boolean is_active flag  
+/// - 8 → i64 Unix timestamp of creation  
+/// - 6 → padding for alignment and forward compatibility
 impl BidOrder {
     pub const LEN: usize = 8 + 32 + 32 + 8 + 2 + 8 + 1 + 1 + 8 + 6;
 }

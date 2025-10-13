@@ -19,16 +19,16 @@ pub struct BorrowRecord {
 
 /// BorrowRecord implementation
 ///
-/// `LEN` defines the precise byte layout of this account for rent
+/// LEN defines the precise byte layout of this account for rent
 /// exemption and deterministic PDA allocations.  
-/// - `8` bytes → Anchor discriminator  
-/// - `32 + 32` → borrower and market public keys  
-/// - `8` → u64 principal amount  
-/// - `2` → u16 rate in basis points  
-/// - `8` → i64 start timestamp  
-/// - `1` → boolean repayment status  
-/// - `1` → PDA bump seed  
-/// - `6` → padding to maintain 8-byte alignment
+/// - 8 bytes → Anchor discriminator  
+/// - 32 + 32 → borrower and market public keys  
+/// - 8 → u64 principal amount  
+/// - 2 → u16 rate in basis points  
+/// - 8 → i64 start timestamp  
+/// - 1 → boolean repayment status  
+/// - 1 → PDA bump seed  
+/// - 6 → padding to maintain 8-byte alignment
 impl BorrowRecord {
     pub const LEN: usize = 8 + 32 + 32 + 8 + 2 + 8 + 1 + 1 + 6;
 }

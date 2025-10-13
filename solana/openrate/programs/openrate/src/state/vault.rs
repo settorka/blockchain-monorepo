@@ -17,10 +17,10 @@ pub struct Vault {
 /// Vault implementation
 ///
 /// Explains account sizing and alignment:  
-/// - `8` bytes → Anchor discriminator  
-/// - `32 + 32 + 32` → three public keys (authority, token account, mint)  
-/// - `1` → PDA bump seed  
-/// - `7` → padding for 8-byte alignment and upgrade flexibility  
+/// - 8 bytes → Anchor discriminator  
+/// - 32 + 32 + 32 → three public keys (authority, token account, mint)  
+/// - 1 → PDA bump seed  
+/// - 7 → padding for 8-byte alignment and upgrade flexibility  
 /// This predictable size ensures rent-exemption calculations remain stable
 /// across client versions.
 impl Vault {
