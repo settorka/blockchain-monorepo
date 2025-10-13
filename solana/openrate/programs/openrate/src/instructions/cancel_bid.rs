@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 use crate::state::*;
+use crate::errors::ErrorCode;
 
 /// Cancel Bid instruction
 ///
@@ -16,7 +17,7 @@ pub struct CancelBid<'info> {
     pub lender: Signer<'info>,
 
     /// The market associated with this bid.
-    #[account(mut, has_one = vault, has_one = token_mint)]
+    #[account(mut, has_one = vault)]
     pub market: Account<'info, Market>,
 
     /// Vault metadata for this market.
@@ -63,8 +64,10 @@ pub fn cancel_bid(ctx: Context<CancelBid>) -> Result<()> {
     require!(unfilled_amount > 0, ErrorCode::NoFundsToWithdraw);
 
     // Transfer remaining liquidity from vault to lender.
-    let seeds = &[b"vault_authority", market.key().as_ref(), &[vault.bump]];
-    let signer_seeds = &[&seeds[..]];
+    let market_key = market.key();
+    let bump = vault.bump;
+    let seeds: &[&[u8]] = &[b"vault_authority", market_key.as_ref(), &[bump]];
+    let signer_seeds = &[seeds];
 
     let cpi_accounts = Transfer {
         from: ctx.accounts.vault_token_account.to_account_info(),

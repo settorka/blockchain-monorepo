@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Mint, Token, TokenAccount};
+use anchor_spl::token::{Mint, Token, TokenAccount};
 use crate::state::*;
 
 /// Initialize Market instruction
@@ -47,12 +47,7 @@ pub struct InitializeMarket<'info> {
     )]
     pub vault_token_account: Account<'info, TokenAccount>,
 
-    /// PDA authority for vault control (derived inside instruction).
-    /// This will sign all token CPI transfers on behalf of the program.
-    /// Derived via: `["vault_authority", market.key().as_ref()]`
-    /// Created implicitly via PDA; not stored on chain.
-    /// Used only to derive bump for Vault metadata.
-    /// (No `init` since it's not an account itself)
+    /// PDA authority for vault control.
     #[account(seeds = [b"vault_authority", market.key().as_ref()], bump)]
     pub vault_authority: SystemAccount<'info>,
 
@@ -63,32 +58,24 @@ pub struct InitializeMarket<'info> {
 }
 
 /// Initialize Market instruction handler
-///
-/// Allocates and seeds the `Market` and `Vault` accounts.
-/// Derives their PDAs, stores configuration data, and links
-/// the token mint, vault account, and authority for subsequent
-/// lending operations.
 pub fn initialize_market(ctx: Context<InitializeMarket>) -> Result<()> {
-    let market = &mut ctx.accounts.market;
-    let vault = &mut ctx.accounts.vault;
+    // Get bumps (no deref)
+    let market_bump = ctx.bumps.market;
+    let vault_bump = ctx.bumps.vault;
 
-    // Derive PDAs
-    let market_bump = *ctx.bumps.get("market").unwrap();
-    let vault_bump = *ctx.bumps.get("vault").unwrap();
+    // Set market config
+    ctx.accounts.market.authority = ctx.accounts.authority.key();
+    ctx.accounts.market.token_mint = ctx.accounts.token_mint.key();
+    ctx.accounts.market.vault = ctx.accounts.vault.key();
+    ctx.accounts.market.bump = market_bump;
+    ctx.accounts.market._reserved = [0; 7];
 
-    // Store Market configuration
-    market.authority = ctx.accounts.authority.key();
-    market.token_mint = ctx.accounts.token_mint.key();
-    market.vault = ctx.accounts.vault.key();
-    market.bump = market_bump;
-    market._reserved = [0; 7];
-
-    // Store Vault configuration
-    vault.authority = ctx.accounts.vault_authority.key();
-    vault.token_account = ctx.accounts.vault_token_account.key();
-    vault.token_mint = ctx.accounts.token_mint.key();
-    vault.bump = vault_bump;
-    vault._reserved = [0; 7];
+    // Set vault config
+    ctx.accounts.vault.authority = ctx.accounts.vault_authority.key();
+    ctx.accounts.vault.token_account = ctx.accounts.vault_token_account.key();
+    ctx.accounts.vault.token_mint = ctx.accounts.token_mint.key();
+    ctx.accounts.vault.bump = vault_bump;
+    ctx.accounts.vault._reserved = [0; 7];
 
     Ok(())
 }

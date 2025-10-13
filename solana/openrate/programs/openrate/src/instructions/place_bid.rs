@@ -15,7 +15,7 @@ pub struct PlaceBid<'info> {
     pub lender: Signer<'info>,
 
     /// The market this bid belongs to.
-    #[account(mut, has_one = token_mint)]
+    #[account(mut)]
     pub market: Account<'info, Market>,
 
     /// Vault metadata for this market.
@@ -57,7 +57,6 @@ pub struct PlaceBid<'info> {
 /// offer, including the rate (in basis points) and timestamp.
 pub fn place_bid(ctx: Context<PlaceBid>, amount: u64, rate_bps: u16) -> Result<()> {
     let lender = &ctx.accounts.lender;
-    let vault = &ctx.accounts.vault;
     let market = &ctx.accounts.market;
     let bid_order = &mut ctx.accounts.bid_order;
     let clock = Clock::get()?;
@@ -72,7 +71,7 @@ pub fn place_bid(ctx: Context<PlaceBid>, amount: u64, rate_bps: u16) -> Result<(
     token::transfer(cpi_ctx, amount)?;
 
     // Populate bid order data.
-    let bid_bump = *ctx.bumps.get("bid_order").unwrap();
+    let bid_bump = ctx.bumps.bid_order;
     bid_order.lender = lender.key();
     bid_order.market = market.key();
     bid_order.amount = amount;

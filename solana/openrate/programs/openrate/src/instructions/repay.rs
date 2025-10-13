@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 use crate::state::*;
+use crate::errors::ErrorCode;
 
 /// Repay instruction
 ///
@@ -18,7 +19,7 @@ pub struct Repay<'info> {
     pub borrower: Signer<'info>,
 
     /// The market the borrow occurred in.
-    #[account(mut, has_one = vault, has_one = token_mint)]
+    #[account(mut, has_one = vault)]
     pub market: Account<'info, Market>,
 
     /// The vault metadata for this market.
@@ -58,7 +59,7 @@ pub struct Repay<'info> {
 /// reactivates the lender’s bid for reuse if applicable.
 pub fn repay(ctx: Context<Repay>) -> Result<()> {
     let borrower = &ctx.accounts.borrower;
-    let vault = &ctx.accounts.vault;
+
     let bid_order = &mut ctx.accounts.bid_order;
     let borrow_record = &mut ctx.accounts.borrow_record;
 

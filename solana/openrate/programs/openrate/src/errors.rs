@@ -17,6 +17,9 @@ pub enum ErrorCode {
     MissingBump,
     /// The borrower does not own the specified account.
     UnauthorizedBorrower,
+    /// This borrow has already been repaid.
+    AlreadyRepaid,
     /// Overflow or underflow during arithmetic operation.
     MathError,
+
 }
