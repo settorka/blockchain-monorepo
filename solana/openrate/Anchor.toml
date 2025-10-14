@@ -14,5 +14,13 @@ url = "https://api.apr.dev"
 cluster = "Localnet"
 wallet = "/home/settorka/.config/solana/id.json"
 
+[test]
+startup_wait = 20000
+
+
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+
+
+[programs.devnet]
+openrate = "7baz5aqHG5CUPqpsavhXDgTmHkYgKVthDuuFkT3Fbdt9"

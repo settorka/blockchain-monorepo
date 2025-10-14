@@ -1,2 +1,4 @@
 **/practice/
 cross-chain-interactions/hyperlane/messages/backend/api/node_modules
+**/test-ledger
+solana/zk_lend
