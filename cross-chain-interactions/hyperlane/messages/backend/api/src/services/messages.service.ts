@@ -22,10 +22,11 @@ export const sendMessage = async (
     const txHash = "0x" + crypto.randomUUID().replace(/-/g, "").slice(0, 64);
 
     // check DB connectivity before trying to insert
+    // just logged though in prod setup will not be used
     try {
         await pool.query("SELECT 1");
     } catch (err) {
-        console.error("❌ Database not connected:", err);
+        console.error("Database not connected:", err);
         throw new Error("Database not connected");
     }
 
