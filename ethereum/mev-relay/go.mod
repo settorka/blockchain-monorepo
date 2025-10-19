@@ -1,11 +1,13 @@
 module mev-relay
 
-go 1.22.2
+go 1.24.9
+
+require google.golang.org/grpc v1.67.0
 
 require (
-    google.golang.org/grpc v1.67.0
-    google.golang.org/protobuf v1.34.0
-    github.com/gin-gonic/gin v1.10.0
-    github.com/joho/godotenv v1.5.1
-    github.com/jackc/pgx/v5 v5.5.2
+	golang.org/x/net v0.28.0 // indirect
+	golang.org/x/sys v0.24.0 // indirect
+	golang.org/x/text v0.17.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240814211410-ddb44dafa142 // indirect
+	google.golang.org/protobuf v1.34.2 // indirect
 )
