@@ -9,34 +9,32 @@ import (
 	"mev-relay/internal/pb"
 )
 
-// Service implements pb.BuilderServiceServer
-type Service struct {
-	mu       sync.Mutex
-	pending  []*pb.BundleSubmission
-	history  []pb.BuildResult
+type Publisher interface {
+	Publish(result *pb.BuildResult) error
 }
 
-// SubmitBundle receives a profitable bundle from the relay
+type Service struct {
+	pb.UnimplementedBuilderServiceServer
+	mu        sync.Mutex
+	pending   []*pb.BundleSubmission
+	history   []*pb.BuildResult
+	Publisher Publisher
+}
+
 func (s *Service) SubmitBundle(ctx context.Context, req *pb.BundleSubmission) (*pb.BuildResult, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	log.Printf("[Builder] Received bundle: %s, profit=%.6f ETH", req.BundleId, req.ProfitEth)
 
-	// Add to pending queue
 	s.pending = append(s.pending, req)
 
-	// Simulate block building
 	block := BuildCandidateBlock(s.pending)
-
-	// Rank bundles by profitability
 	ranked := RankBundles(block.Bundles)
-
-	// Simulate inclusion
 	selected := ranked[0]
+
 	log.Printf("[Builder] Selected bundle %s for inclusion", selected.BundleId)
 
-	// Simulated latency
 	time.Sleep(300 * time.Millisecond)
 
 	result := &pb.BuildResult{
@@ -46,9 +44,14 @@ func (s *Service) SubmitBundle(ctx context.Context, req *pb.BundleSubmission) (*
 		InclusionLatencyMs: 300,
 	}
 
-	// Record block build result
-	s.history = append(s.history, *result)
-	s.pending = []*pb.BundleSubmission{} // reset pending
+	s.history = append(s.history, result)
+	s.pending = []*pb.BundleSubmission{}
+
+	if s.Publisher != nil {
+		if err := s.Publisher.Publish(result); err != nil {
+			log.Printf("failed to publish build result: %v", err)
+		}
+	}
 
 	return result, nil
 }

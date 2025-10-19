@@ -9,21 +9,15 @@ import (
 	"mev-relay/internal/pb"
 )
 
-// Service implements pb.SimulationServiceServer
 type Service struct {
+	pb.UnimplementedSimulationServiceServer
 	cfg *config.Config
-}
-
-// mustEmbedUnimplementedSimulationServiceServer implements pb.SimulationServiceServer.
-func (s *Service) mustEmbedUnimplementedSimulationServiceServer() {
-	panic("unimplemented")
 }
 
 func NewService(cfg *config.Config) *Service {
 	return &Service{cfg: cfg}
 }
 
-// SimulateBundle runs bundle simulation against a local EVM node (Anvil/Geth)
 func (s *Service) SimulateBundle(ctx context.Context, req *pb.BundleRequest) (*pb.BundleResponse, error) {
 	start := time.Now()
 

@@ -1,7 +1,6 @@
 package relay
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"time"
@@ -11,7 +10,7 @@ import (
 	"mev-relay/internal/pb"
 )
 
-// JSON-RPC request schema for eth_sendBundle
+// BundleRPCRequest defines the JSON-RPC schema for eth_sendBundle.
 type BundleRPCRequest struct {
 	JSONRPC string            `json:"jsonrpc"`
 	ID      int               `json:"id"`
@@ -27,7 +26,7 @@ type BundleRPCParams struct {
 	Replacement  *string  `json:"replacementUuid,omitempty"`
 }
 
-// JSON-RPC response
+// BundleRPCResponse defines the JSON-RPC response payload.
 type BundleRPCResponse struct {
 	JSONRPC string      `json:"jsonrpc"`
 	ID      int         `json:"id"`
@@ -48,9 +47,9 @@ func handleBundleRequest(c *gin.Context, cfg *config.Config) {
 	}
 
 	params := req.Params[0]
-	log.Printf("[Relay] Received bundle submission with %d txs targeting block %s", len(params.Txs), params.BlockNumber)
+	log.Printf("[Relay] Received bundle submission with %d txs targeting block %s",
+		len(params.Txs), params.BlockNumber)
 
-	// Forward to simulator queue
 	result, err := dispatchToSimulator(cfg, &pb.BundleRequest{
 		BundleId:    generateBundleID(),
 		Txs:         params.Txs,
@@ -72,10 +71,10 @@ func handleBundleRequest(c *gin.Context, cfg *config.Config) {
 			"simulated_at": time.Now().UTC(),
 		},
 	}
+
 	c.JSON(http.StatusOK, resp)
 }
 
-// helper to generate pseudo-unique bundle IDs
 func generateBundleID() string {
 	return time.Now().Format("20060102T150405.000000000")
 }

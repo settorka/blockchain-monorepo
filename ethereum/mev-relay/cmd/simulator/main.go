@@ -5,9 +5,9 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
-	"mev-relay/internal/simulator"
-	"mev-relay/internal/pb"
 	"mev-relay/internal/config"
+	"mev-relay/internal/pb"
+	"mev-relay/internal/simulator"
 )
 
 func main() {
@@ -19,10 +19,12 @@ func main() {
 	}
 
 	server := grpc.NewServer()
-	pb.RegisterSimulationServiceServer(server, &simulator.Service{})
+
+	simulatorService := simulator.NewService(cfg)
+	pb.RegisterSimulationServiceServer(server, simulatorService)
 
 	log.Println("Simulation service running on port", cfg.SimulatorPort)
 	if err := server.Serve(lis); err != nil {
-		log.Fatal("Simulator failed:", err)
+		log.Fatal("Simulator service failed:", err)
 	}
 }

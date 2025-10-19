@@ -17,14 +17,12 @@ import (
 func main() {
 	cfg := config.Load()
 
-	// Connect to TimescaleDB
 	dbPool, err := connectDB(cfg.DatabaseURL)
 	if err != nil {
 		log.Fatal("Database connection failed:", err)
 	}
 	defer dbPool.Close()
 
-	// Create gRPC listener
 	lis, err := net.Listen("tcp", ":"+cfg.BuilderPort)
 	if err != nil {
 		log.Fatal("Failed to listen:", err)
@@ -32,7 +30,6 @@ func main() {
 
 	server := grpc.NewServer()
 
-	// Initialize builder service with TimescaleDB publisher
 	builderService := &builder.Service{
 		Publisher: builder.NewDBPublisher(dbPool),
 	}
