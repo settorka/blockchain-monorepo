@@ -5,13 +5,18 @@ import (
 	"log"
 	"time"
 
-	"mev-relay/internal/pb"
 	"mev-relay/internal/config"
+	"mev-relay/internal/pb"
 )
 
 // Service implements pb.SimulationServiceServer
 type Service struct {
 	cfg *config.Config
+}
+
+// mustEmbedUnimplementedSimulationServiceServer implements pb.SimulationServiceServer.
+func (s *Service) mustEmbedUnimplementedSimulationServiceServer() {
+	panic("unimplemented")
 }
 
 func NewService(cfg *config.Config) *Service {

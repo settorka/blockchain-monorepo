@@ -1,5 +1,4 @@
 package builder
-package builder
 
 import (
 	"encoding/json"
