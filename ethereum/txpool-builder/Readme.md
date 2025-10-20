@@ -6,12 +6,14 @@ Connects to a local Geth node, fetches pending transactions from the txpool,
 ranks them by gas price, and assembles block candidates.
 
 ## Design
+![Transaction Builder](design/eth-tx-builder-layer.png)
+
 This project is a component of the transaction lifecycle
-|[End-to-end](design/eth-tx-block-production-pipeline.png)
+![End-to-end](design/eth-tx-block-production-pipeline.png)
 
 ![Transaction flow](design/eth-tx-flow-ux.png)
 
-![Transaction Builder](design/eth-tx-builder-layer.png)
+
 
 
 ## Deployment:
