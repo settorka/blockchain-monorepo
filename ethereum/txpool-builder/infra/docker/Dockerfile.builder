@@ -1,7 +1,7 @@
-FROM golang:1.22
+FROM golang:1.24.9-alpine
 
 WORKDIR /app
-COPY ../../ ./
+COPY . .
 
 RUN go mod tidy && go build -o txpool-builder ./cmd/builder
 
