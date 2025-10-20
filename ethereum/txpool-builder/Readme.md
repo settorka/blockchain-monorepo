@@ -1,14 +1,20 @@
 # TxPool Builder
 
-Description:
+## Description
 A Go-based transaction selection and ordering engine.
 Connects to a local Geth node, fetches pending transactions from the txpool,
 ranks them by gas price, and assembles block candidates.
 
-Design
+## Design
+This project is a component of the transaction lifecycle
+|[End-to-end](design/eth-tx-block-production-pipeline.png)
+
+![Transaction flow](design/eth-tx-flow-ux.png)
+
+![Transaction Builder](design/eth-tx-builder-layer.png)
 
 
-Deployment:
+## Deployment:
 1. Navigate to infra directory
 ```bash
    cd infra
