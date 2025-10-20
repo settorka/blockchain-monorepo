@@ -2,15 +2,20 @@ package client
 
 import (
 	"log"
+	"os"
 
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 )
 
-// Connect establishes both RPC and Ethereum client connections
-// to a specified Geth endpoint. Returns the raw RPC client and
-// a higher-level ethclient wrapper for convenience.
-func Connect(url string) (*rpc.Client, *ethclient.Client) {
+// ConnectEnv establishes RPC and Ethereum client connections
+// using the GETH_RPC_URL environment variable.
+func ConnectEnv() (*rpc.Client, *ethclient.Client) {
+	url := os.Getenv("GETH_RPC_URL")
+	if url == "" {
+		log.Fatal("missing GETH_RPC_URL environment variable")
+	}
+
 	rpcClient, err := rpc.Dial(url)
 	if err != nil {
 		log.Fatalf("failed to connect to RPC endpoint: %v", err)

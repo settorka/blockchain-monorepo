@@ -1,29 +1,36 @@
 package main
 
 import (
-    "context"
-    "log"
-    "txpool-builder/internal/builder"
-    "txpool-builder/internal/client"
+	"context"
+	"log"
+	"os"
+	"txpool-builder/internal/builder"
+	"txpool-builder/internal/client"
 )
 
+// main initializes the connection to a Geth node using the
+// GETH_RPC_URL environment variable. It retrieves pending
+// transactions, ranks them by gas price, and assembles a pseudo block.
 func main() {
-    ctx := context.Background()
+	ctx := context.Background()
 
-    // Connect to local Geth node
-    rpcClient, ethClient := client.Connect("http://127.0.0.1:8545")
-    defer rpcClient.Close()
+	rpcURL := os.Getenv("GETH_RPC_URL")
+	if rpcURL == "" {
+		log.Fatal("missing GETH_RPC_URL environment variable")
+	}
 
-    // Fetch pending txs
-    txs := builder.FetchPendingTxs(ctx, rpcClient)
-    if len(txs) == 0 {
-        log.Println("No pending transactions found in txpool.")
-        return
-    }
+	rpcClient, ethClient := client.Connect(rpcURL)
+	defer rpcClient.Close()
+	_ = ethClient
 
-    // Rank and build pseudo block
-    ranked := builder.RankByGasPrice(txs)
-    builder.BuildBlock(ranked, 50)
+	txs := builder.FetchPendingTxs(ctx, rpcClient)
+	if len(txs) == 0 {
+		log.Println("no pending transactions found in txpool")
+		return
+	}
 
-    log.Println("pseudo_block.json generated successfully")
+	ranked := builder.RankByGasPrice(txs)
+	builder.BuildBlock(ranked, 50)
+
+	log.Println("pseudo_block.json generated successfully")
 }
