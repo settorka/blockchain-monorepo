@@ -10,7 +10,7 @@ import (
 
 // ConnectEnv establishes RPC and Ethereum client connections
 // using the GETH_RPC_URL environment variable.
-func ConnectEnv() (*rpc.Client, *ethclient.Client) {
+func Connect() (*rpc.Client, *ethclient.Client) {
 	url := os.Getenv("GETH_RPC_URL")
 	if url == "" {
 		log.Fatal("missing GETH_RPC_URL environment variable")

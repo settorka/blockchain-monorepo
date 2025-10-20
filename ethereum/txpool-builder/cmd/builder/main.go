@@ -3,23 +3,17 @@ package main
 import (
 	"context"
 	"log"
-	"os"
 	"txpool-builder/internal/builder"
 	"txpool-builder/internal/client"
 )
 
-// main initializes the connection to a Geth node using the
-// GETH_RPC_URL environment variable. It retrieves pending
-// transactions, ranks them by gas price, and assembles a pseudo block.
+// - initializes the connection to a Geth node,
+// - retrieves pending transactions from  txpool,
+// - ranks them by gas price and assembles pseudo block.
 func main() {
 	ctx := context.Background()
 
-	rpcURL := os.Getenv("GETH_RPC_URL")
-	if rpcURL == "" {
-		log.Fatal("missing GETH_RPC_URL environment variable")
-	}
-
-	rpcClient, ethClient := client.Connect(rpcURL)
+	rpcClient, ethClient := client.Connect()
 	defer rpcClient.Close()
 	_ = ethClient
 
