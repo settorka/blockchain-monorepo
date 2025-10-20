@@ -18,8 +18,11 @@ services:
       - "8545:8545"
     volumes:
       - geth_data:/root/.ethereum
+      - ./docker/seed_txpool.sh:/root/seed_txpool.sh
     networks:
       - buildernet
+    entrypoint: ["/bin/sh", "-c", "geth $@ & sleep 10 && sh /root/seed_txpool.sh", "--"]
+
 
   builder:
     build:
