@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Polygon",
+        "chainId": 137,
+        "rpcUrl": "http://anvil-polygon:8545"
+    },
+    {
+        "name": "Arbitrum",
+        "chainId": 42161,
+        "rpcUrl": "http://anvil-arbitrum:8545"
+    },
+    {
+        "name": "Optimism",
+        "chainId": 10,
+        "rpcUrl": "http://anvil-optimism:8545"
+    },
+    {
+        "name": "Sepolia",
+        "chainId": 11155111,
+        "rpcUrl": "http://anvil-sepolia:8545"
+    }
+]

@@ -1,0 +1,25 @@
+### Root health check
+GET http://localhost:3000/
+Accept: application/json
+
+###
+
+### Fetch all chains
+GET http://localhost:3000/chains
+Accept: application/json
+
+
+### Send a cross-chain message
+POST http://localhost:3000/messages
+Content-Type: application/json
+Accept: application/json
+
+{
+  "fromChain": "Polygon",
+  "toChain": "Optimism",
+  "payload": "Sample Message"
+}
+
+### Fetch all message history
+GET http://localhost:3000/messages/history
+Accept: application/json
