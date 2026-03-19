@@ -1,0 +1,13 @@
+[project]
+name = "arb-bot"
+version = "0.1.0"
+description = "Simple cross-DEX arbitrage bot (Uniswap vs Sushi)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "web3",
+    "aiohttp",
+    "python-dotenv",
+]
+
+[tool.uv]
