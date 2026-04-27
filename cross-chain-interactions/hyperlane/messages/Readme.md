@@ -39,7 +39,7 @@ A visual overview of the architecture is provided in  ![Hyperlane - Cross chain 
 The API exposes endpoints for sending messages, retrieving chains, and querying message history. 
 See [Rest Endpoints for messaging](./backend/endpoints.rest) for usage examples.
 
-## Future Workkk 
+## Future Work
 
 - Add user authentication via nonce and message signing (EIP-4361).
 - Add frontend client in react (hmm)
